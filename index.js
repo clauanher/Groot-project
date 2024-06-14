@@ -21,13 +21,12 @@ function initializeAndListenWithExpress() {
         .use(cors())
         .use(morgan('dev'))
         .use(express.json())
-        //.use('/api', require('./api/routes'))
+        .use('/api', require('./api/routes'))
 
         .listen(3000, () => {
             console.log(`> Listening on port: ${3000}`)
         })
 }
-
 async function startAPI() {
     await checkAndSyncMySQL()
     initializeAndListenWithExpress()

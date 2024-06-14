@@ -90,9 +90,6 @@ const getOwnConstellation = async (req, res) => {
     }
 };
 
-
-
-
 const updateOneConstellation = async (req, res) => {
     try {
         const [result] = await Constellations.update(
@@ -132,5 +129,4 @@ module.exports = {
     getOneConstellation,
     getOwnConstellation,
     updateOneConstellation,
-
 }

@@ -90,9 +90,6 @@ const getOwnProfile = async (req, res) => {
     }
 };
 
-
-
-
 const updateOneUser = async (req, res) => {
     try {
         const [result] = await User.update(
@@ -159,5 +156,6 @@ module.exports = {
     getOneUser,
     getOwnProfile,
     updateOneUser,
-    deleteOneUser
+    deleteOneUser,
+    //createUser
 }

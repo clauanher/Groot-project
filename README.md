@@ -4,7 +4,7 @@
 
 ### DB Diagram
 
-![](diagram.png)
+![image](https://github.com/clauanher/Groot-project/assets/158210168/924abb65-cd67-4935-ab15-cb2cde4b360c)
 
 ### Authentication Endpoints
 

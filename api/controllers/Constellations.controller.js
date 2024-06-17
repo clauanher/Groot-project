@@ -1,7 +1,23 @@
 const User = require('../models/users.model')
 const Stars = require('../models/stars.model')
 const Constellations = require('../models/constellations.model')
-//const bcrypt = require('bcrypt')
+
+const createConstellation = async (req, res) => {
+    try {
+        const constellation = await Constellations.create(req.body)
+
+        res.status(200).json({
+            message: "Constellation created",
+            result: constellation,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: "Error creating constellation",
+            result: error,
+        });
+    }
+}
 
 const getAllConstell = async (req, res) => {
     try {
@@ -129,4 +145,5 @@ module.exports = {
     getOneConstellation,
     getOwnConstellation,
     updateOneConstellation,
+    createConstellation
 }

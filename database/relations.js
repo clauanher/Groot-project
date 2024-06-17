@@ -3,14 +3,13 @@ const Stars = require('../api/models/stars.model')
 const Constellations = require('../api/models/constellations.model')
 
 const defineRelations = () => {
-  
-
+try {
   // ONE TO MANY
   User.hasMany(Stars)
-  Stars.belongsTo(User) // Esto generará una columna en joke, llamada 'user_id' con una foreign key a la tabla 'user'
+  Stars.belongsTo(User)
 
   User.hasMany(Constellations)
-  Constellations.belongsTo(User) 
+  Constellations.belongsTo(User)
 
   Constellations.hasMany(Stars)
   Stars.belongsTo(Constellations)
@@ -20,6 +19,10 @@ const defineRelations = () => {
     through: "favorites",    // Se generará la tabla intermedia con el nombre 'favorites'
     timestamps: false,
   })
+  
+} catch (error) {
+  throw error
+}
  
 }
 

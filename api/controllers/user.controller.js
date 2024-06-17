@@ -1,7 +1,27 @@
 const User = require('../models/users.model')
 const Stars = require('../models/stars.model')
 const Constellations = require('../models/constellations.model')
-//const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt')
+
+const createUser = async (req, res) => {
+    try {
+        const salt = bcrypt.genSaltSync(parseInt(process.env.BCRYPT_SALTS))
+        req.body.password = bcrypt.hashSync(req.body.password, salt)
+
+        const user = await User.create(req.body)
+
+        res.status(201).json({
+            message: 'User created',
+            result: user
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            message: 'Error creating user',
+            result: error
+        })
+    }
+}
 
 const getAllUsers = async (req, res) => {
     try {
@@ -157,5 +177,5 @@ module.exports = {
     getOwnProfile,
     updateOneUser,
     deleteOneUser,
-    //createUser
+    createUser
 }

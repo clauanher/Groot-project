@@ -1,6 +1,7 @@
 const router = require("express").Router()
 
 const {
+    createConstellation,
     getAllConstell,
     getOneConstellation,
     getOwnConstellation,
@@ -18,6 +19,7 @@ router.get('/', checkAuth, checkAdmin, getAllConstell) // getAllUsers solo podr�
 router.get('/profile', checkAuth, getOwnConstellation) // getOwnProfile requiere que el usuario esté logueado para realizar esta petición, ya que usamos el middleware de checkAuth
 router.get('/:id', getOneConstellation)
 router.put('/:id', updateOneConstellation)
+router.post('/', createConstellation)
 
 
 module.exports = router

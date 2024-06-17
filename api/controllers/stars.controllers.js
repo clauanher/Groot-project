@@ -1,7 +1,66 @@
 const User = require('../models/users.model')
 const Stars = require('../models/stars.model')
 const Constellations = require('../models/constellations.model')
-//const bcrypt = require('bcrypt')
+
+const createAStar = async (req, res) => {
+    try {
+        const star = await Stars.create(req.body)
+
+        res.status(200).json({
+            message: "Star created",
+            result: star,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: "Error creating star",
+            result: error,
+        });
+    }
+}
+
+const addFavouriteStar = async (req, res) => {
+    try {
+        const star = await Stars.findByPk(req.params.id)
+
+        if (!star) {
+            res.status(404).json()
+        }
+        // Al definir una relación Many to Many entre Joke y User, Sequelize nos ha generado automáticamente el método addUser, donde podemos añadir al usuario que tenemos guardado en res.locals, que es el usuario logueado
+        await star.addUser(res.locals.user)
+
+        res.status(200).json({
+            message: 'star added',
+            result: star
+        })
+    } catch (error) {
+
+    }
+}
+
+const addLike = async (req, res) => {
+    try {
+        const star = await Stars.findByPk(req.params.id)
+
+        if (!star) {
+            res.status(404).json({
+                message: 'Star not found',
+                result: 0
+            })
+        }
+
+        star.likes++ // Aumentamos en 1 el contador de likes
+
+        await star.save() // Guardamos los cambios realizados al chiste en la base de datos
+
+        res.status(200).json({
+            message: 'Liked added',
+            result: star.likes
+        })
+    } catch (error) {
+
+    }
+}
 
 const getAllStars = async (req, res) => {
     try {
@@ -57,41 +116,25 @@ const getOneStars = async (req, res) => {
     }
 };
 
-const getOwnStar = async (req, res) => {
+const adoptAStar = async (req, res) => {
     try {
-        const stars = await Stars.findByPk(res.locals.stars.id, {
-            include: [ // EAGER LOADING: Devolvemos la info de contacto y todos los chistes que tenga como favoritos
-                {
-                    model: User,
-                },
-                {
-                    model: Stars
-                }
-            ],
-        });
-
-        if (!stars) {
-            res.status(404).json({
-                message: "No star found",
-                result: stars,
-            });
+        const {id} =req.params
+        const star =await Stars.findByPk (id)
+        if (star.userId) {
+          return res.status(401).json ({message:'This star is already adopted'})
+        } 
+        const user = await User.findByPk(res.locals.user.id)
+        if (user.suscriptiontype === 'premium'|| user.suscriptiontype === 'vip'){
+            star.update({userId:res.locals.user.id})
         }
-
-        res.status(200).json({
-            message: "Star fetched",
-            result: stars,
-        });
+        else {
+            res.status(401).json({message:'Suscription not valid'})
+        }
+        res.status(200).json({message:'Star adopted succesfully', result:star})
     } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            message: "Error getting one star",
-            result: error,
-        });
+        res.status(500).send(error.message)
     }
-};
-
-
-
+}
 
 const updateOneStar = async (req, res) => {
     try {
@@ -125,11 +168,13 @@ const updateOneStar = async (req, res) => {
     }
 };
 
-
-
 module.exports = {
     getAllStars,
     getOneStars,
-    getOwnStar,
     updateOneStar,
-}
+    adoptAStar,
+    createAStar,
+    addFavouriteStar,
+    addLike
+    }
+

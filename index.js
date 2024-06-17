@@ -1,7 +1,7 @@
 //process.stdout.write('\x1B[2J\x1B[0f')
 require('dotenv').config()
 const { checkConnection, syncModels } = require('./database/index')
-const addRelationsToModels = require('./database/index') 
+const defineRelations = require('./database/relations') 
 const Users = require("./api/models/users.model")
 const Stars = require("./api/models/stars.model")
 const Constellations = require("./api/models/constellations.model")
@@ -12,8 +12,8 @@ const morgan = require('morgan')
 
 async function checkAndSyncMySQL() {
     await checkConnection()
-    //addRelationsToModels()
-    await syncModels('force')
+    defineRelations()
+    await syncModels('')
 }
 
 function initializeAndListenWithExpress() {

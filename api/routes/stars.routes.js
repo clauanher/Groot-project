@@ -1,10 +1,14 @@
 const router = require("express").Router()
 
 const {
+    createAStar,
     getAllStars,
     getOneStars,
-    getOwnStar,
+    adoptAStar,
     updateOneStar,
+    addFavouriteStar,
+    addLike
+
 } = require('../controllers/stars.controllers')
 
 // Requerimos los middlewares que hemos creado para poder utilizarlo en rutas específicas 
@@ -14,9 +18,12 @@ const {
 } = require('../middlewares')
 
 router.get('/', checkAuth, checkAdmin, getAllStars) // getAllUsers solo podrá ser ejecutada por un administrador, ya que hemos empleados los middlewares de checkAuth y checkAdmin
-router.get('/profile', checkAuth, getOwnStar) // getOwnProfile requiere que el usuario esté logueado para realizar esta petición, ya que usamos el middleware de checkAuth
+router.put('/adopt/:id', checkAuth, adoptAStar) // getOwnProfile requiere que el usuario esté logueado para realizar esta petición, ya que usamos el middleware de checkAuth
 router.get('/:id', getOneStars)
 router.put('/:id', updateOneStar)
+router.post('/', createAStar)
+router.post('/', addFavouriteStar)
+router.put('/star/:id/like', addLike)
 
 
 module.exports = router

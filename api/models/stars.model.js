@@ -15,6 +15,10 @@ const Stars = sequelize.define(
         mass: {
             type: DataTypes.DECIMAL(10, 2)
             }, 
+        like: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
+        }
     }
 )
 module.exports = Stars

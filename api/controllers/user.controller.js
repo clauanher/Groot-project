@@ -51,11 +51,7 @@ const getAllUsers = async (req, res) => {
 
 const getOneUser = async (req, res) => {
     try {
-        const user = await User.findByPk(req.params.id, {
-            include: {
-                model: User // EAGER LOADING. Devolvemos la info del usuario incluyendo en el mismo objeto la información de contacto que tenga relacionada
-            }
-        })
+        const user = await User.findByPk( req.params.id )
 
         if (!user) {
             res.status(404).json({
@@ -79,16 +75,7 @@ const getOneUser = async (req, res) => {
 
 const getOwnProfile = async (req, res) => {
     try {
-        const user = await User.findByPk(res.locals.user.id, {
-            include: [ // EAGER LOADING: Devolvemos la info de contacto y todos los chistes que tenga como favoritos
-                {
-                    model: User,
-                },
-                {
-                    model: Stars
-                }
-            ],
-        });
+        const user = await User.findByPk(res.locals.user.id );
 
         if (!user) {
             res.status(404).json({

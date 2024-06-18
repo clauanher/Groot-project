@@ -47,11 +47,7 @@ const getAllConstell = async (req, res) => {
 
 const getOneConstellation = async (req, res) => {
     try {
-        const constellation = await Constellations.findByPk(req.params.id, {
-            include: {
-                model: Constellations
-            }
-        })
+        const constellation = await Constellations.findByPk(req.params.id)
 
         if (!constellation) {
             res.status(404).json({
@@ -75,27 +71,22 @@ const getOneConstellation = async (req, res) => {
 
 const getOwnConstellation = async (req, res) => {
     try {
-        const constellation = await Constellations.findByPk(res.locals.stars.id, {
-            include: [ // EAGER LOADING: Devolvemos la info de contacto y todos los chistes que tenga como favoritos
-                {
-                    model: User,
-                },
-                {
-                    model: Constellations
-                }
-            ],
+        const constellations = await Constellations.findAll( {
+           where: {
+            userId: res.locals.user.id
+           }
         });
 
-        if (!constellation) {
+        if (!constellations) {
             res.status(404).json({
                 message: "No constellation found",
-                result: constellation,
+                result: constellations,
             });
         }
 
         res.status(200).json({
             message: "Constellation fetched",
-            result: constellation,
+            result: constellations,
         });
     } catch (error) {
         console.log(error);
@@ -138,12 +129,42 @@ const updateOneConstellation = async (req, res) => {
     }
 };
 
+const deleteOneConstellation = async (req, res) => {
+  try {
+    const constellation = await Constellations.destroy({
+      where: {
+        id: req.params.id,
+      },
+    });
+
+    if (!constellation) {
+      res.status(404).json({
+        message: "No Constellation found",
+        result: constellation,
+      });
+    }
+
+    res.status(200).json({
+      message: "Constellation deleted",
+      result: constellation,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Error getting one constellation",
+      result: error,
+    });
+  }
+};
+
+
 
 
 module.exports = {
-    getAllConstell,
-    getOneConstellation,
-    getOwnConstellation,
-    updateOneConstellation,
-    createConstellation
-}
+  getAllConstell,
+  getOneConstellation,
+  getOwnConstellation,
+  updateOneConstellation,
+  createConstellation,
+  deleteOneConstellation
+};

@@ -19,46 +19,28 @@ const createAStar = async (req, res) => {
     }
 }
 
-const addFavouriteStar = async (req, res) => {
-    try {
-        const star = await Stars.findByPk(req.params.id)
-
-        if (!star) {
-            res.status(404).json()
-        }
-        // Al definir una relación Many to Many entre Joke y User, Sequelize nos ha generado automáticamente el método addUser, donde podemos añadir al usuario que tenemos guardado en res.locals, que es el usuario logueado
-        await star.addUser(res.locals.user)
-
-        res.status(200).json({
-            message: 'star added',
-            result: star
-        })
-    } catch (error) {
-
-    }
-}
-
 const addLike = async (req, res) => {
     try {
         const star = await Stars.findByPk(req.params.id)
 
         if (!star) {
-            res.status(404).json({
+           return res.status(404).json({
                 message: 'Star not found',
                 result: 0
             })
         }
 
-        star.likes++ // Aumentamos en 1 el contador de likes
-
+        star.like++ // Aumentamos en 1 el contador de likes
+            console.log(res.locals)
         await star.save() // Guardamos los cambios realizados al chiste en la base de datos
-
-        res.status(200).json({
+        await star.addUser(res.locals.user.id)
+        
+            res.status(200).json({
             message: 'Liked added',
-            result: star.likes
+            result: star.like
         })
     } catch (error) {
-
+        res.status(500).send(error.message)
     }
 }
 
@@ -91,9 +73,7 @@ const getAllStars = async (req, res) => {
 const getOneStars = async (req, res) => {
     try {
         const stars = await Stars.findByPk(req.params.id, {
-            include: {
-                model: Stars 
-            }
+
         })
 
         if (!stars) {
@@ -168,13 +148,42 @@ const updateOneStar = async (req, res) => {
     }
 };
 
-module.exports = {
-    getAllStars,
-    getOneStars,
-    updateOneStar,
-    adoptAStar,
-    createAStar,
-    addFavouriteStar,
-    addLike
+const deleteOneStar = async (req, res) => {
+  try {
+    const star = await Stars.destroy({
+      where: {
+        id: req.params.id,
+      },
+    });
+
+    if (!star) {
+      res.status(404).json({
+        message: "No star found",
+        result: star,
+      });
     }
+
+    res.status(200).json({
+      message: "Star deleted",
+      result: star,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Error getting one star",
+      result: error,
+    });
+  }
+};
+
+module.exports = {
+  getAllStars,
+  getOneStars,
+  updateOneStar,
+  adoptAStar,
+  createAStar,
+  addLike,
+  deleteOneStar,
+  
+};
 

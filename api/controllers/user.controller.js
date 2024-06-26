@@ -75,7 +75,11 @@ const getOneUser = async (req, res) => {
 
 const getOwnProfile = async (req, res) => {
     try {
-        const user = await User.findByPk(res.locals.user.id );
+        const user = await User.findByPk(res.locals.user.id,{
+            include:[
+                {model:Stars}
+            ]
+        } );
 
         if (!user) {
             res.status(404).json({

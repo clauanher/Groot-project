@@ -3,7 +3,7 @@ const { sequelize } = require("../../database/index")
 const { DataTypes } = require("sequelize")
 
 const Stars = sequelize.define(
-    "star",
+    "stars",
     {
         name: {
             type: DataTypes.STRING,
